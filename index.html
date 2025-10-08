@@ -201,16 +201,17 @@ function doGet(e) {
       // Contact target prefers notify URL if provided, else local contact.vcf
       const contactTarget = notify || (baseUrl() + 'contact.vcf');
 
-      // Recreate canvases to avoid overlaying
-      for (const key of Object.keys(qrs)) {
-        const el = qrs[key].._el; // container
-        el.innerHTML = ''; // clear
-        qrs[key] = new QRCode(el, { text: '', width: 256, height: 256, correctLevel: QRCode.CorrectLevel.M });
-      }
+      // Rebuild each QR by clearing the container divs (qrcode.js appends a canvas/img)
+      const containers = {
+        contact: document.getElementById('qrContact'),
+        linkedin: document.getElementById('qrLinkedIn'),
+        github: document.getElementById('qrGitHub'),
+      };
+      Object.values(containers).forEach(el => { if (el) el.innerHTML = ''; });
 
-      qrs.contact.makeCode(contactTarget);
-      qrs.linkedin.makeCode(li);
-      qrs.github.makeCode(gh);
+      qrs.contact = new QRCode(containers.contact, { text: contactTarget, width: 256, height: 256, correctLevel: QRCode.CorrectLevel.M });
+      qrs.linkedin = new QRCode(containers.linkedin, { text: li, width: 256, height: 256, correctLevel: QRCode.CorrectLevel.M });
+      qrs.github = new QRCode(containers.github, { text: gh, width: 256, height: 256, correctLevel: QRCode.CorrectLevel.M });
 
       // Update "Open target" link for quick test of contact QR
       const open = document.getElementById('openVcfLink');
