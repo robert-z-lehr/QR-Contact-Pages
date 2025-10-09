@@ -32,7 +32,7 @@
 <body>
   <header>
     <h1>QR: Contact Card + Profiles</h1>
-    <p class="small">This page creates three QR codes: (1) downloadable vCard (<span class="small">adds to iOS/Android Contacts</span>), (2) LinkedIn, and (3) GitHub. You can download each PNG to use as a lock‑screen wallpaper or print asset.</p>
+    <p class="small">This page creates three QR codes: (1) downloadable vCard (<span class="small">adds to iOS/Android Contacts</span>), (2) LinkedIn, and (3) GitHub. You can download each PNG to use as a lock-screen wallpaper or print asset.</p>
   </header>
 
   <section class="grid two">
@@ -40,54 +40,54 @@
       <h2>1) Contact details → <code class="inline">.vcf</code></h2>
       <div class="row">
         <div>
-          <label>Full Name (FN)</label>
+          <label for="fn">Full Name (FN)</label>
           <input id="fn" placeholder="Ada Lovelace" value="Ada Lovelace" />
         </div>
         <div>
-          <label>Organization (ORG)</label>
+          <label for="org">Organization (ORG)</label>
           <input id="org" placeholder="Analytical Engines" value="Analytical Engines" />
         </div>
       </div>
       <div class="row">
         <div>
-          <label>Title (TITLE)</label>
+          <label for="title">Title (TITLE)</label>
           <input id="title" placeholder="Engineer" value="Engineer" />
         </div>
         <div>
-          <label>Phone (CELL)</label>
+          <label for="tel">Phone (CELL)</label>
           <input id="tel" placeholder="+1-555-123-4567" value="+1-555-123-4567" />
         </div>
       </div>
       <div class="row">
         <div>
-          <label>Email</label>
+          <label for="email">Email</label>
           <input id="email" placeholder="ada@example.com" value="ada@example.com" />
         </div>
         <div>
-          <label>Website (URL)</label>
+          <label for="url">Website (URL)</label>
           <input id="url" placeholder="https://example.com" value="https://example.com" />
         </div>
       </div>
-      <label>Short description (NOTE)</label>
+      <label for="note">Short description (NOTE)</label>
       <textarea id="note" placeholder="Short bio or context">Computing + systems.</textarea>
       <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
         <button class="btn" id="buildVcf">Build vCard file</button>
         <a id="downloadVcf" class="btn secondary" download="contact.vcf" href="#" aria-disabled="true">Download vCard (.vcf)</a>
       </div>
-      <p class="small" style="margin-top:8px">Tip: Commit the downloaded <code class="inline">contact.vcf</code> into your GitHub Pages repo root. The QR below assumes it will live at <code class="inline">/contact.vcf</code>.</p>
+      <p class="small" style="margin-top:8px">Tip: Commit the downloaded <code class="inline">contact.vcf</code> into your GitHub Pages repo folder served by Pages (root or <code class="inline">/docs</code>). The Contact QR will point to <code class="inline">/contact.vcf</code>.</p>
     </div>
 
     <div class="card">
       <h2>2) Profile Links</h2>
-      <label>LinkedIn Profile URL</label>
+      <label for="linkedin">LinkedIn Profile URL</label>
       <input id="linkedin" placeholder="https://www.linkedin.com/in/your-handle" value="https://www.linkedin.com/in/your-handle" />
-      <label>GitHub Profile URL</label>
+      <label for="github">GitHub Profile URL</label>
       <input id="github" placeholder="https://github.com/your-handle" value="https://github.com/your-handle" />
       <div style="margin-top:12px; display:flex; gap:8px; flex-wrap:wrap;">
         <button class="btn" id="refreshQrs">Refresh QR Codes</button>
       </div>
-      <p class="small" style="margin-top:8px">Optional scan notification: set a <b>redirect webhook URL</b> that emails you then redirects to the vCard. See the instructions below; paste the deployed URL here:</p>
-      <input id="notifyUrl" placeholder="https://script.google.com/macros/s/DEPLOY_ID/exec?to=https%3A%2F%2FYOUR_PAGES_SITE%2Fcontact.vcf" />
+      <p class="small" style="margin-top:8px">Optional scan notification: set a <b>redirect webhook URL</b> that emails you then redirects to the vCard. Paste it here:</p>
+      <input id="notifyUrl" placeholder="https://script.google.com/macros/s/DEPLOY_ID/exec?to=https%3A%2F%2F<your-username>.github.io%2F<repo>%2Fcontact.vcf" />
     </div>
   </section>
 
@@ -115,23 +115,32 @@
     </div>
   </section>
 
+  <!-- SAFELY RENDERED NOTIFICATION SNIPPET (cannot execute or meta-refresh) -->
   <section class="card" style="margin-top:24px;">
     <h2>Optional: Email/push notification when scanned (no server)</h2>
     <ol>
       <li>Create a new <b>Google Apps Script</b> at <i>script.google.com</i> → New project.</li>
       <li>Paste the code below. Change <code class="inline">NOTIFY_EMAIL</code> and <code class="inline">DEST_DEFAULT</code>.</li>
       <li>Deploy → <b>New deployment</b> → <b>Web app</b> → Execute as <b>Me</b>, Who has access: <b>Anyone</b>. Copy the web app URL.</li>
-      <li>Set the <b>Notify URL</b> field above to: <code class="inline">YOUR_WEB_APP_URL?to=https%3A%2F%2FYOUR_PAGES_SITE%2Fcontact.vcf</code></li>
+      <li>Set <b>Notify URL</b> above to: <code class="inline">YOUR_WEB_APP_URL?to=https%3A%2F%2F&lt;your-username&gt;.github.io%2F&lt;repo&gt;%2Fcontact.vcf</code></li>
     </ol>
-    <pre style="white-space:pre-wrap;background:#0b1220;border:1px solid #1f2937;border-radius:12px;padding:12px;overflow:auto;"><code>&lt;!-- Google Apps Script (Code.js) --&gt;
+
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+      <h3 style="margin:0;">Google Apps Script (Code.js)</h3>
+      <button class="btn secondary" id="copy-gas">Copy</button>
+    </div>
+
+    <!-- Stored as inert text so browsers cannot parse/execute it -->
+    <script id="gas-snippet" type="text/plain">
+// Google Apps Script (Code.js)
 const NOTIFY_EMAIL = "you@example.com";            // where to send a ping
-const DEST_DEFAULT = "https://your-pages-site/contact.vcf"; // fallback redirect
+const DEST_DEFAULT = "https://your-username.github.io/your-repo/contact.vcf"; // fallback redirect
 
 function doGet(e) {
   try {
     const params = e.parameter || {};
-    const ua = (e &amp;&amp; e['headers'] &amp;&amp; e['headers']['User-Agent']) || '';
-    const ip = (e &amp;&amp; e['context'] &amp;&amp; e['context']['clientIPAddress']) || '';
+    const ua = (e && e['headers'] && e['headers']['User-Agent']) || '';
+    const ip = (e && e['context'] && e['context']['clientIPAddress']) || '';
 
     const to = params.to || DEST_DEFAULT; // destination to redirect to
     const when = new Date();
@@ -140,31 +149,38 @@ function doGet(e) {
     MailApp.sendEmail({
       to: NOTIFY_EMAIL,
       subject: `QR scanned → ${to}`,
-      htmlBody: `Time: ${when.toISOString()}&lt;br&gt;IP: ${ip}&lt;br&gt;UA: ${ua}&lt;br&gt;Ref: ${params.ref || ''}`,
+      htmlBody: `Time: ${when.toISOString()}<br>IP: ${ip}<br>UA: ${ua}<br>Ref: ${params.ref || ''}`,
     });
 
     // 302 redirect to target (e.g., your vCard)
-    return HtmlService.createHtmlOutput("&lt;html&gt;&lt;head&gt;&lt;meta http-equiv='refresh' content='0; url=" + to + "'&gt;&lt;/head&gt;&lt;body&gt;Redirecting…&lt;/body&gt;&lt;/html&gt;")
+    return HtmlService
+      .createHtmlOutput("<html><head><meta http-equiv='refresh' content='0; url=" + to + "'></head><body>Redirecting…</body></html>")
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
   } catch (err) {
-    return HtmlService.createHtmlOutput("Error: " + (err &amp;&amp; err.message ? err.message : err));
+    return HtmlService.createHtmlOutput("Error: " + (err && err.message ? err.message : err));
   }
 }
-</code></pre>
-    <p class="small">This approach requires a Google account and grants the script permission to send mail as you. Alternative services: Zapier/IFTTT webhooks, Formspree, or a tiny serverless function (Cloudflare Workers, Netlify Functions) to forward a ping and 302‑redirect.</p>
+    </script>
+
+    <pre id="gas-visible" style="white-space:pre-wrap;background:#0b1220;border:1px solid #1f2937;border-radius:12px;padding:12px;overflow:auto;color:#e5e7eb;"></pre>
+
+    <p class="small">This approach uses Google Apps Script to send an email and then redirect to your <code class="inline">.vcf</code>. Alternatives: Zapier/IFTTT webhooks, Formspree, Cloudflare Workers, or Netlify Functions.</p>
   </section>
 
   <footer class="small" style="margin-top:24px;color:#9ca3af;">
-    Host these files in a public GitHub repo with Pages enabled (branch: <code class="inline">main</code>, folder: <code class="inline">/root</code> or <code class="inline">/docs</code>). Commit <code class="inline">contact.vcf</code> to the same folder for a stable QR target.
+    Host these files in a public GitHub repo with Pages enabled (branch: <code class="inline">main</code>, folder: <code class="inline">/</code> or <code class="inline">/docs</code>). Commit <code class="inline">contact.vcf</code> to the same folder for a stable QR target.
   </footer>
 
-  <!-- Lightweight QR generator (cdnjs) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-MidnNnP2h4bG1S5O2rX6qQ0g9nV6c9qN2xkFZQ4W9lK6vX2tY2ZKxqzJr2JbC3mKQf8pL9Qz8Q8C6t2S7rGUNw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- Lightweight QR generator -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
     // Utility: build a simple vCard 3.0 string
     function buildVCard({ fn, org, title, tel, email, url, note }) {
-      // Escape commas/semicolons/newlines as per vCard
-      const esc = (s='') => String(s).replace(/\\/g,'\\\\').replace(/\n/g,'\\n').replace(/,/g,'\\,').replace(/;/g,'\\;');
+      const esc = (s='') => String(s)
+        .replace(/\\/g,'\\\\')
+        .replace(/\n/g,'\\n')
+        .replace(/,/g,'\\,')
+        .replace(/;/g,'\\;');
       return [
         'BEGIN:VCARD',
         'VERSION:3.0',
@@ -211,7 +227,7 @@ function doGet(e) {
 
       qrs.contact = new QRCode(containers.contact, { text: contactTarget, width: 256, height: 256, correctLevel: QRCode.CorrectLevel.M });
       qrs.linkedin = new QRCode(containers.linkedin, { text: li, width: 256, height: 256, correctLevel: QRCode.CorrectLevel.M });
-      qrs.github = new QRCode(containers.github, { text: gh, width: 256, height: 256, correctLevel: QRCode.CorrectLevel.M });
+      qrs.github  = new QRCode(containers.github,  { text: gh, width: 256, height: 256, correctLevel: QRCode.CorrectLevel.M });
 
       // Update "Open target" link for quick test of contact QR
       const open = document.getElementById('openVcfLink');
@@ -256,6 +272,24 @@ function doGet(e) {
         requestAnimationFrame(() => link.remove());
       }
     });
+
+    // Safely render & copy the Apps Script sample without exposing executable HTML
+    (function () {
+      const s = document.getElementById('gas-snippet');
+      const pre = document.getElementById('gas-visible');
+      if (s && pre) pre.textContent = s.textContent;
+
+      const btn = document.getElementById('copy-gas');
+      if (btn && s) {
+        btn.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(s.textContent);
+            btn.textContent = 'Copied';
+            setTimeout(() => { btn.textContent = 'Copy'; }, 1200);
+          } catch {}
+        });
+      }
+    })();
 
     // Initial render
     refreshQrs();
