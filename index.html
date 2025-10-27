@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact QR (vCard)</title>
+  <meta name="description" content="Create a vCard (.vcf) and a QR code that points to it. Host on GitHub Pages." />
+  <style>
+    :root { --gap: 16px; --radius: 14px; }
+    * { box-sizing: border-box; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
+    body { margin: 0; padding: 24px; background: #0b0c10; color: #e5e7eb; }
+    h1 { margin: 0 0 12px; font-size: 1.5rem; }
+    .wrap { display: grid; gap: 16px; max-width: 900px; margin: 0 auto; }
+    .card { background: #111827; border: 1px solid #1f2937; border-radius: var(--radius); padding: 16px; }
+    .grid { display: grid; gap: 12px; }
+    .two { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    @media (max-width: 900px) { .two { grid-template-columns: 1fr; } }
+    label { display: block; font-size: 0.9rem; color: #cbd5e1; }
+    input, textarea, select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #374151; background: #0b1220; color: #e5e7eb; }
+    textarea { min-height: 70px; resize: vertical; }
+    .row { display: grid; gap: 10px; grid-template-columns: repeat(2,1fr); }
+    .btn { background: #2563eb; border: none; color: white; padding: 10px 14px; border-radius: 10px; cursor: pointer; font-weight: 600; }
+    .btn.secondary { background: #374151; }
+    .btn:disabled { opacity: .6; cursor: not-allowed; }
+    .small { font-size: .9rem; color: #9ca3af; }
+    .qr-wrap { display: grid; gap: 10px; justify-items: center; text-align: center; }
+    .qr-box { background: white; padding: 12px; border-radius: 12px; }
+    .controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:center; }
+    .switch { display:flex; gap:8px; align-items:center; }
+    code.inline { background: #0b1220; padding: 2px 6px; border-radius: 6px; border: 1px solid #1f2937; }
+
+    /* Circular display frame (visual only) */
+    .circle-frame {
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: white;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; /* Hides square QR corners */
+      box-shadow: 0 0 10px rgba(0,0,0,0.35);
+    }
+    .hidden { display:none; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="card">
+      <h1>Contact QR (vCard)</h1>
+      <p class="small">1) Fill your info → Build & download <code class="inline">contact.vcf</code>. 2) Commit that file to the same folder as this page in your GitHub Pages repo. 3) Scan the QR below to add your contact.</p>
+    </header>
+
+    <section class="card">
+      <h2 style="margin-top:0;">vCard details</h2>
+      <div class="grid">
+        <div class="row">
+          <div>
+            <label for="fn">Full Name (FN)</label>
+            <input id="fn" placeholder="Ada Lovelace" value="Ada Lovelace" />
+          </div>
+          <div>
+            <label for="org">Organization (ORG)</label>
+            <input id="org" placeholder="Analytical Engines" value="Analytical Engines" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="title">Title (TITLE)</label>
+            <input id="title" placeholder="Engineer" value="Engineer" />
+          </div>
+          <div>
+            <label for="tel">Phone (CELL)</label>
+            <input id="tel" placeholder="+1-555-123-4567" value="+1-555-123-4567" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="email">Email</label>
+            <input id="email" placeholder="ada@example.com" value="ada@example.com" />
+          </div>
+          <div>
+            <label for="url">Website (URL)</label>
+            <input id="url" placeholder="https://example.com" value="https://example.com" />
+          </div>
+        </div>
+        <div>
+          <label for="note">Short description (NOTE)</label>
+          <textarea id="note" placeholder="Short bio or context">Computing + systems.</textarea>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn" id="buildVcf">Build vCard file</button>
+          <a id="downloadVcf" class="btn secondary" download="contact.vcf" href="#" aria-disabled="true">Download vCard (.vcf)</a>
+        </div>
+        <p class="small">After downloading, <b>commit contact.vcf to your repo</b> (same folder as this page). Then the QR target below will resolve to it.</p>
+      </div>
+    </section>
+
+    <section class="card qr-wrap">
+      <h2 style="margin-top:0;">Contact QR → <code class="inline">contact.vcf</code></h2>
+
+      <!-- Style toggle -->
+      <div class="controls">
+        <div class="switch">
+          <label for="qrStyle">Style:</label>
+          <select id="qrStyle">
+            <option value="square" selected>Square</option>
+            <option value="circle">Circle</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Square container (default) -->
+      <div id="squareContainer" class="qr-box">
+        <div id="qrSquare"></div>
+      </div>
+
+      <!-- Circular container (visual clip) -->
+      <div id="circleContainer" class="circle-frame hidden">
+        <div id="qrCircle"></div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="dlPngSquare">Download QR PNG (square)</button>
+        <button class="btn secondary" id="dlPngCircle">Download Circular PNG</button>
+        <a id="openVcfLink" class="btn secondary" href="#" target="_blank" rel="noopener">Open target</a>
+      </div>
+
+      <p class="small">Target URL is computed as <code class="inline">[this page's folder]/contact.vcf</code>. On scan, phones open/download it → “Add to Contacts.”</p>
+    </section>
+
+    <footer class="small" style="color:#9ca3af;">
+      Host on GitHub Pages (<code class="inline">main</code> branch, folder <code class="inline">/</code> or <code class="inline">/docs</code>). Ensure <code class="inline">index.html</code> and <code class="inline">contact.vcf</code> live in the folder configured in Pages settings.
+    </footer>
+  </div>
+
+  <!-- QR generator -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    // Build a simple vCard 3.0 string
+    function buildVCard({ fn, org, title, tel, email, url, note }) {
+      const esc = (s='') => String(s)
+        .replace(/\\/g,'\\\\')
+        .replace(/\n/g,'\\n')
+        .replace(/,/g,'\\,')
+        .replace(/;/g,'\\;');
+      return [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        `N:${esc(fn)};;;;`,
+        `FN:${esc(fn)}`,
+        org ? `ORG:${esc(org)}` : null,
+        title ? `TITLE:${esc(title)}` : null,
+        tel ? `TEL;TYPE=CELL:${esc(tel)}` : null,
+        email ? `EMAIL;TYPE=INTERNET:${esc(email)}` : null,
+        url ? `URL:${esc(url)}` : null,
+        note ? `NOTE:${esc(note)}` : null,
+        'END:VCARD'
+      ].filter(Boolean).join('\r\n');
+    }
+
+    // Base URL of this page (trailing slash), to reference contact.vcf in same folder
+    function baseUrl() {
+      const { origin, pathname } = window.location;
+      const path = pathname.endsWith('/') ? pathname : pathname.replace(/\/[^/]*$/, '/');
+      return origin + path; // e.g., https://username.github.io/repo/
+    }
+
+    // Set up two QR instances (square & circle). We'll show/hide containers, but keep both generated.
+    const squareBox = document.getElementById('qrSquare');
+    const circleBox = document.getElementById('qrCircle');
+    const squareContainer = document.getElementById('squareContainer');
+    const circleContainer = document.getElementById('circleContainer');
+    const styleSelect = document.getElementById('qrStyle');
+
+    let qrSquare, qrCircle;
+
+    // Create/refresh both QRs with same target
+    function renderQrs() {
+      const target = baseUrl() + 'contact.vcf';
+
+      // Clear & create
+      squareBox.innerHTML = '';
+      circleBox.innerHTML = '';
+
+      qrSquare = new QRCode(squareBox, { text: target, width: 256, height: 256, correctLevel: QRCode.CorrectLevel.M });
+      // Slightly smaller inside the circle frame for breathing room
+      qrCircle = new QRCode(circleBox, { text: target, width: 260, height: 260, correctLevel: QRCode.CorrectLevel.M });
+
+      // Update quick open link
+      const open = document.getElementById('openVcfLink');
+      if (open) open.href = target;
+    }
+
+    // Toggle display
+    function applyStyle() {
+      const style = styleSelect.value;
+      if (style === 'circle') {
+        squareContainer.classList.add('hidden');
+        circleContainer.classList.remove('hidden');
+      } else {
+        circleContainer.classList.add('hidden');
+        squareContainer.classList.remove('hidden');
+      }
+    }
+
+    styleSelect.addEventListener('change', applyStyle);
+
+    // Build & download the vCard
+    document.getElementById('buildVcf').addEventListener('click', () => {
+      const data = {
+        fn: document.getElementById('fn').value,
+        org: document.getElementById('org').value,
+        title: document.getElementById('title').value,
+        tel: document.getElementById('tel').value,
+        email: document.getElementById('email').value,
+        url: document.getElementById('url').value,
+        note: document.getElementById('note').value,
+      };
+      const vcf = buildVCard(data);
+      const blob = new Blob([vcf], { type: 'text/vcard;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.getElementById('downloadVcf');
+      a.href = url;
+      a.setAttribute('aria-disabled', 'false');
+      a.textContent = `Download vCard (.vcf) — ${vcf.length} bytes`;
+    });
+
+    // Download square PNG (whatever is in the square container)
+    document.getElementById('dlPngSquare').addEventListener('click', () => {
+      const canvas = squareBox.querySelector('canvas');
+      const img = canvas ? canvas : squareBox.querySelector('img');
+      if (!img) return;
+      const link = document.createElement('a');
+      link.download = 'contact-qr-square.png';
+      link.href = img.toDataURL ? img.toDataURL('image/png') : img.src;
+      document.body.appendChild(link);
+      link.click();
+      requestAnimationFrame(() => link.remove());
+    });
+
+    // Download circular PNG: draw QR onto an offscreen canvas with a circular clip
+    document.getElementById('dlPngCircle').addEventListener('click', () => {
+      const canvas = circleBox.querySelector('canvas');
+      const img = canvas ? canvas : circleBox.querySelector('img');
+      if (!img) return;
+
+      // If library produced <img>, make a canvas from it
+      const srcCanvas = canvas || (() => {
+        const c = document.createElement('canvas');
+        c.width = img.naturalWidth || 260;
+        c.height = img.naturalHeight || 260;
+        const cx = c.getContext('2d');
+        cx.drawImage(img, 0, 0, c.width, c.height);
+        return c;
+      })();
+
+      // Offscreen circular canvas
+      const size = 280;          // export size
+      const pad = 10;            // white padding inside circle
+      const drawSize = size - pad * 2;
+      const out = document.createElement('canvas');
+      out.width = size; out.height = size;
+      const ctx = out.getContext('2d');
+
+      // White background + circular clip
+      ctx.fillStyle = 'white';
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, (size/2) - 0.5, 0, Math.PI * 2);
+      ctx.clip();
+
+      // Draw QR centered under the clip
+      ctx.drawImage(srcCanvas, pad, pad, drawSize, drawSize);
+      ctx.restore();
+
+      // Download
+      const link = document.createElement('a');
+      link.download = 'contact-qr-circle.png';
+      link.href = out.toDataURL('image/png');
+      document.body.appendChild(link);
+      link.click();
+      requestAnimationFrame(() => link.remove());
+    });
+
+    // Initial render
+    renderQrs();
+    applyStyle();
+  </script>
+</body>
+</html>
