@@ -279,8 +279,13 @@
         return c;
       })();
 
-      const size = 320, pad = 10, drawSize = size - pad * 2;
-      const out = document.createElement('canvas'); out.width = size; out.height = size;
+      const size = parseInt(sizeSelect.value, 10); 
+      const pad = 10;
+      const drawSize = size - pad * 2;
+      
+      const out = document.createElement('canvas');
+      out.width = size;
+      out.height = size;
       const ctx = out.getContext('2d');
 
       ctx.fillStyle = 'white';
