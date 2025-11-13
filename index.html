@@ -182,7 +182,7 @@
 
     function baseUrl() {
       const { origin, pathname } = window.location;
-      const path = pathname.endsWith('/') ? pathname : pathname.replace(/\\/[^/]*$/, '/');
+      const path = pathname.endsWith('/') ? pathname : pathname.replace(/\/[^/]*$/, '/');
       return origin + path;
     }
 
