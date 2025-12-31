@@ -1,0 +1,10 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Lehr;Robert;;;
+FN:Robert Lehr
+ORG:UT Austin
+TITLE:Ph.D. Student
+TEL;TYPE=CELL:+1-512-922-0392
+EMAIL;TYPE=INTERNET:robert.z.lehr@gmail.com
+URL:https://robert-z-lehr.github.io/
+END:VCARD
