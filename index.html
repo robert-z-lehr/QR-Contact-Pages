@@ -49,7 +49,7 @@
   <div class="wrap">
     <header class="card">
       <h1>Contact QR (vCard)</h1>
-      <p class="small">Fill your info → Build vCard → Commit <code class="inline">contact.vcf</code> → Scan QR.</p>
+      <p class="small">Fill your info → Build vCard → Commit <code class="inline">contact_most_recent.vcf</code> → Scan QR.</p>
     </header>
 
     <section class="card">
@@ -96,20 +96,20 @@
 
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
           <button class="btn" id="buildVcf">Build vCard file</button>
-          <a id="downloadVcf" class="btn secondary" download="contact.vcf" href="#" aria-disabled="true">Download vCard (.vcf)</a>
+          <a id="downloadVcf" class="btn secondary" download="contact_most_recent.vcf" href="#" aria-disabled="true">Download vCard (.vcf)</a>
         </div>
 
       </div>
     </section>
 
     <section class="card qr-wrap">
-      <h2 style="margin-top:0;">Contact QR → <code class="inline">contact.vcf</code></h2>
+      <h2 style="margin-top:0;">Contact QR → <code class="inline">contact_most_recent.vcf</code></h2>
 
       <div class="grid two" style="width:100%;max-width:780px;">
         <div>
           <label for="targetUrl">Target URL (optional)</label>
           <input id="targetUrl" placeholder="" />
-          <p class="small">If blank, we auto-use <code class="inline">[this page]/contact.vcf</code></p>
+          <p class="small">If blank, we auto-use <code class="inline">[this page]/contact_most_recent.vcf</code></p>
         </div>
 
         <div class="row" style="align-items:end;">
@@ -162,7 +162,7 @@
     </section>
 
     <footer class="small" style="color:#9ca3af;">
-      Ensure <code class="inline">index.html</code> and <code class="inline">contact.vcf</code> are in your GitHub Pages folder.
+      Ensure <code class="inline">index.html</code> and <code class="inline">contact_most_recent.vcf</code> are in your GitHub Pages folder.
     </footer>
   </div>
 
@@ -228,7 +228,7 @@
 
     function currentTarget() {
       const manual = (targetInput.value || "").trim();
-      return manual || baseUrl() + "contact.vcf";
+      return manual || baseUrl() + "contact_most_recent.vcf";
     }
 
     /* -----------------------------
@@ -360,7 +360,7 @@
     });
 
     /* Initial load */
-    targetInput.placeholder = baseUrl() + "contact.vcf";
+    targetInput.placeholder = baseUrl() + "contact_most_recent.vcf";
     renderQrs();
     applyStyle();
   </script>
