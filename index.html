@@ -29,17 +29,17 @@
     .switch { display:flex; gap:8px; align-items:center; }
     code.inline { background: #0b1220; padding: 2px 6px; border-radius: 6px; border: 1px solid #1f2937; }
 
-    /* Circular frame (non-destructive) */
+    /* Circular QR with a circular quiet-zone background */
     .circle-frame {
-      width: 340px;
-      height: 340px;
       border-radius: 50%;
       background: white;
+      padding: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 0 10px rgba(0,0,0,0.35);
     }
+    #qrCircle canvas, #qrCircle svg { display: block; }
 
     .hidden { display:none; }
   </style>
@@ -167,6 +167,7 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/qr-code-styling@1.9.0/lib/qr-code-styling.js"></script>
 
   <script>
     /* -----------------------------
@@ -225,6 +226,7 @@
 
     const EC = QRCode.CorrectLevel;
     const mapEC = { L: EC.L, M: EC.M, Q: EC.Q, H: EC.H };
+    let circleQr = null;
 
     function currentTarget() {
       const manual = (targetInput.value || "").trim();
@@ -237,7 +239,8 @@
     function renderQrs() {
       const target = currentTarget();
       const size = parseInt(sizeSelect.value, 10) || 320;
-      const level = mapEC[ecSelect.value] || EC.Q;
+      const levelKey = ecSelect.value || "Q";
+      const level = mapEC[levelKey] || EC.Q;
 
       squareBox.innerHTML = "";
       circleBox.innerHTML = "";
@@ -250,13 +253,34 @@
         correctLevel: level
       });
 
-      /* Circular QR (non-destructive) */
-      new QRCode(circleBox, {
-        text: target,
+      /* True circular QR: valid QR matrix + decorative modules around it */
+      circleQr = new QRCodeStyling({
         width: size,
         height: size,
-        correctLevel: level
+        type: "canvas",
+        shape: "circle",
+        data: target,
+        margin: 0,
+        qrOptions: {
+          errorCorrectionLevel: levelKey
+        },
+        dotsOptions: {
+          color: "#000000",
+          type: "square"
+        },
+        cornersSquareOptions: {
+          color: "#000000",
+          type: "square"
+        },
+        cornersDotOptions: {
+          color: "#000000",
+          type: "square"
+        },
+        backgroundOptions: {
+          color: "transparent"
+        }
       });
+      circleQr.append(circleBox);
 
       const open = document.getElementById("openVcfLink");
       open.href = target;
@@ -320,43 +344,47 @@
 
     /* -----------------------------
        7. Download Circular PNG
-       (true circle background but unmodified QR)
+       (transparent outside a white circular quiet zone)
     ----------------------------- */
-    document.getElementById("dlPngCircle").addEventListener("click", () => {
-      const src = circleBox.querySelector("canvas") || circleBox.querySelector("img");
-      if (!src) return;
+    document.getElementById("dlPngCircle").addEventListener("click", async () => {
+      if (!circleQr) return;
 
       const size = parseInt(sizeSelect.value, 10) || 320;
-      const canvas = document.createElement("canvas");
-      canvas.width = size + 40;
-      canvas.height = size + 40;
+      const padding = 14;
+      const blob = await circleQr.getRawData("png");
+      if (!blob) return;
 
-      const ctx = canvas.getContext("2d");
+      const objectUrl = URL.createObjectURL(blob);
+      const img = new Image();
 
-      /* White circle background */
-      ctx.fillStyle = "white";
-      ctx.beginPath();
-      ctx.arc(canvas.width/2, canvas.height/2, size/2 + 20, 0, Math.PI * 2);
-      ctx.fill();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = size + padding * 2;
+        canvas.height = size + padding * 2;
 
-      /* Draw QR centered */
-      const offset = 20;
-      if (src instanceof HTMLCanvasElement) {
-        ctx.drawImage(src, offset, offset, size, size);
-      } else {
-        const tmp = document.createElement("canvas");
-        tmp.width = src.naturalWidth;
-        tmp.height = src.naturalHeight;
-        tmp.getContext("2d").drawImage(src, 0, 0);
-        ctx.drawImage(tmp, offset, offset, size, size);
-      }
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const link = document.createElement("a");
-      link.download = "contact-qr-circle.png";
-      link.href = canvas.toDataURL("image/png");
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+        /* Circular white quiet zone */
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        /* Circular QR pattern */
+        ctx.drawImage(img, padding, padding, size, size);
+
+        const link = document.createElement("a");
+        link.download = "contact-qr-circle.png";
+        link.href = canvas.toDataURL("image/png");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        URL.revokeObjectURL(objectUrl);
+      };
+
+      img.src = objectUrl;
     });
 
     /* Initial load */
