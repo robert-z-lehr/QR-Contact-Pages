@@ -1,169 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Contact QR Generator</title>
-  <meta name="description" content="Create a direct vCard QR code that lets someone add your contact information from a phone scan. The contact data is stored directly inside the QR." />
-  <style>
-    :root { --gap:16px; --radius:14px; --bg:#0b0c10; --panel:#111827; --panel-2:#0b1220; --border:#1f2937; --border-2:#374151; --text:#e5e7eb; --muted:#9ca3af; --label:#cbd5e1; --accent:#2563eb; }
-    * { box-sizing:border-box; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; }
-    body { margin:0; padding:24px; background:var(--bg); color:var(--text); }
-    h1 { margin:0 0 10px; font-size:1.6rem; }
-    h2 { margin-top:0; font-size:1.15rem; }
-    h3 { margin-bottom:8px; font-size:1rem; }
-    .wrap { display:grid; gap:var(--gap); max-width:980px; margin:0 auto; }
-    .card { background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:16px; }
-    .grid { display:grid; gap:12px; }
-    .two { grid-template-columns:repeat(2,minmax(0,1fr)); }
-    .three { grid-template-columns:repeat(3,minmax(0,1fr)); }
-    .row { display:grid; gap:10px; grid-template-columns:repeat(2,minmax(0,1fr)); }
-    @media (max-width:760px) { body{padding:14px;} .two,.three,.row{grid-template-columns:1fr!important;} .qr-output-grid{grid-template-columns:1fr!important;} }
-    label { display:block; font-size:.9rem; color:var(--label); margin-bottom:5px; }
-    input,textarea,select { width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border-2); background:var(--panel-2); color:var(--text); }
-    textarea { min-height:74px; resize:vertical; }
-    button,.btn { border:none; text-decoration:none; background:var(--accent); color:white; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:600; display:inline-flex; align-items:center; justify-content:center; }
-    button.secondary,.btn.secondary { background:var(--border-2); }
-    button:disabled,.btn[aria-disabled="true"] { opacity:.55; cursor:not-allowed; pointer-events:none; }
-    .controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-    .small { font-size:.9rem; color:var(--muted); line-height:1.45; }
-    .micro { font-size:.8rem; color:var(--muted); }
-    .inline-meta { margin-top:6px; min-height:1.2em; }
-    .qr-wrap { display:grid; gap:14px; }
-    .qr-output-grid { display:grid; gap:16px; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:start; }
-    .qr-panel { display:grid; justify-items:center; gap:10px; text-align:center; }
-    .qr-stage { background:white; display:inline-grid; place-items:center; max-width:100%; overflow:auto; }
-    .qr-stage.square { border-radius:10px; padding:0; }
-    .circle-frame { border-radius:50%; background:white; display:inline-flex; align-items:center; justify-content:center; overflow:hidden; max-width:100%; }
-    #qrSquare canvas,#qrCircle canvas,#qrCircle svg { display:block; max-width:100%; height:auto; }
-    .status { border:1px solid var(--border-2); border-radius:12px; padding:12px; line-height:1.4; }
-    .status.good { background:#14351f; }
-    .status.warn { background:#47300d; }
-    .status.risk { background:#471919; }
-    .status.info { background:#182b55; }
-    .diagnostics { display:grid; gap:6px; grid-template-columns:minmax(150px,1fr) minmax(100px,1fr); max-width:520px; }
-    .diagnostics div:nth-child(odd) { color:var(--muted); }
-    .diagnostics div:nth-child(even) { text-align:right; font-variant-numeric:tabular-nums; }
-    details { border:1px solid var(--border); border-radius:12px; padding:10px 12px; background:#0d1422; }
-    details+details { margin-top:10px; }
-    summary { cursor:pointer; font-weight:650; }
-    code.inline { background:var(--panel-2); padding:2px 6px; border-radius:6px; border:1px solid var(--border); }
-    .hidden { display:none!important; }
-    .error { color:#fecaca; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SIST | Structured Idea Stress Test</title>
+<meta name="description" content="SIST is a two-page printable Structured Idea Stress Test for understanding, challenging, and improving early-stage ideas.">
+<style>
+*{box-sizing:border-box}
+:root{--ink:#171717;--muted:#666;--line:#cfcfcf;--soft:#f5f5f3;--accent:#2e5b4d}
+html,body{margin:0;padding:0;color:var(--ink);font-family:Arial,Helvetica,sans-serif;background:#ddd}
+.toolbar{position:sticky;top:0;z-index:10;display:flex;justify-content:center;gap:10px;padding:10px;background:#f4f4f1;border-bottom:1px solid #ccc}
+.toolbar button{border:1px solid #bbb;border-radius:7px;background:white;padding:8px 13px;font-weight:700;cursor:pointer}
+.toolbar button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.sheet{width:8.5in;min-height:11in;margin:20px auto;padding:.35in .42in;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.18)}
+.header{border-bottom:2px solid var(--accent);padding-bottom:8px;margin-bottom:9px;display:flex;align-items:flex-end;gap:12px}
+.header-main{flex:1}
+h1{margin:0;font-size:22px;line-height:1.05}
+.acronym{display:inline-block;margin-left:7px;padding:2px 6px;border:1px solid var(--ink);border-radius:999px;font-size:10px;letter-spacing:.08em;vertical-align:3px}
+.subtitle{color:var(--muted);font-size:11px;margin:3px 0 0}.page-label{font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}
+.meta{display:grid;grid-template-columns:2fr 1.2fr 1.2fr .75fr;gap:7px;margin-bottom:9px}.field{font-size:8.5px;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;color:#555}.line{display:block;height:20px;border-bottom:1px solid #777}
+.section{margin-top:9px}.section-title{font-size:11px;margin:0 0 5px;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.05em}.num{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--accent);color:white;font-size:9px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.card{border:1px solid var(--line);border-radius:5px;padding:6px;background:white}.card h3{margin:0 0 2px;font-size:9.5px;text-transform:uppercase;letter-spacing:.035em}.prompt{margin:0 0 4px;font-size:8px;line-height:1.25;color:var(--muted)}
+textarea{width:100%;border:0;border-top:1px solid #e2e2e2;resize:vertical;min-height:44px;font:10px Arial;outline:none;background:#fff}.tall textarea{min-height:58px}.small textarea{min-height:32px}.wide textarea{min-height:65px}
+.checks{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:8px}.checks label{white-space:nowrap}.checks input{vertical-align:-1px}
+.next-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px 7px;font-size:8px}.next-grid label{white-space:nowrap}.notes{width:100%;height:1.45in;border:1px solid var(--line);border-radius:5px;background:repeating-linear-gradient(to bottom,#fff 0,#fff 20px,#ddd 21px)}
+.footer{margin-top:8px;padding-top:5px;border-top:1px solid var(--line);font-size:7.5px;color:var(--muted);display:flex;justify-content:space-between;gap:10px}
+@media(max-width:900px){body{background:white}.toolbar{position:static}.sheet{width:100%;min-height:auto;margin:0;padding:18px;box-shadow:none}.meta,.grid2,.grid3{grid-template-columns:1fr}.page-label{display:none}.next-grid{grid-template-columns:1fr 1fr}}
+@page{size:letter portrait;margin:.25in}
+@media print{body{background:white}.toolbar{display:none}.sheet{width:8in;min-height:10.5in;margin:0;padding:.1in;box-shadow:none;break-after:page;page-break-after:always}.sheet:last-child{break-after:auto;page-break-after:auto}.meta{grid-template-columns:2fr 1.2fr 1.2fr .75fr}.grid2{grid-template-columns:1fr 1fr}.grid3{grid-template-columns:repeat(3,1fr)}.next-grid{grid-template-columns:repeat(4,1fr)}}
+</style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="card">
-      <h1>Contact QR Generator</h1>
-      <p class="small">Enter contact information, generate a direct vCard QR, test the scan, then download the QR. The contact data is stored inside the QR itself, so no hosted contact file is required.</p>
-    </header>
+<div class="toolbar"><button class="primary" onclick="window.print()">Print / Save PDF</button><button onclick="document.querySelectorAll('textarea').forEach(x=>x.value='')">Clear text</button></div>
 
-    <section class="card">
-      <h2>1. Contact information</h2>
-      <div class="grid">
-        <div class="row">
-          <div><label for="fn">Full Name <span class="micro">(required)</span></label><input id="fn" autocomplete="name" placeholder="Jane Smith" /></div>
-          <div><label for="org">Organization <span class="micro">(optional)</span></label><input id="org" autocomplete="organization" placeholder="Example Organization" /></div>
-        </div>
-        <div class="row">
-          <div><label for="title">Title <span class="micro">(optional)</span></label><input id="title" autocomplete="organization-title" placeholder="Project Manager" /></div>
-          <div><label for="tel">Phone <span class="micro">(optional)</span></label><input id="tel" autocomplete="tel" inputmode="tel" placeholder="+15125551234" /><div class="micro inline-meta">Compact international formatting reduces QR payload size.</div></div>
-        </div>
-        <div class="row">
-          <div><label for="email">Email <span class="micro">(optional)</span></label><input id="email" autocomplete="email" inputmode="email" placeholder="name@example.com" /></div>
-          <div><label for="url">Website <span class="micro">(optional)</span></label><input id="url" inputmode="url" placeholder="https://example.com" /></div>
-        </div>
-        <div><label for="note">Short description <span class="micro">(optional)</span></label><textarea id="note" placeholder="Keep this short if the QR must be physically small."></textarea><div class="micro inline-meta">Long descriptions can increase QR density substantially.</div></div>
-        <div class="controls"><button id="generateBtn">Generate Contact QR</button></div>
-        <div id="payloadLive" class="small">Payload: 0 UTF-8 bytes</div>
-        <div id="formError" class="small error hidden"></div>
-      </div>
-    </section>
+<section class="sheet">
+<div class="header"><div class="header-main"><h1>Structured Idea Stress Test <span class="acronym">SIST</span></h1><div class="subtitle">Understand it. React to it. Then try to break it.</div></div><div class="page-label">Page 1 · Understand + React</div></div>
+<div class="meta"><div class="field">Idea / Concept<span class="line"></span></div><div class="field">Presenter / Creator<span class="line"></span></div><div class="field">Evaluator (optional)<span class="line"></span></div><div class="field">Date<span class="line"></span></div></div>
 
-    <section class="card qr-wrap">
-      <h2>2. QR settings</h2>
-      <div class="grid three">
-        <div><label for="ecLevel">Error correction</label><select id="ecLevel"><option value="M" selected>M (~15%) - Recommended</option><option value="Q">Q (~25%) - More durable</option><option value="H">H (~30%) - Highest redundancy</option></select></div>
-        <div><label for="qrSize">Image size <span class="micro">(pixels)</span></label><select id="qrSize"><option>256</option><option selected>320</option><option>384</option><option>448</option><option>512</option><option>768</option><option>1024</option></select></div>
-        <div><label for="qrStyle">Preview style</label><select id="qrStyle"><option value="square" selected>Square</option><option value="circle">Circle</option></select></div>
-      </div>
-      <div class="grid two">
-        <div><label for="physicalSize">Intended total physical QR size <span class="micro">(including quiet zone)</span></label><input id="physicalSize" type="number" min="0" step="0.01" placeholder="1.50" /></div>
-        <div><label for="physicalUnit">Unit</label><select id="physicalUnit"><option value="in" selected>inches</option><option value="mm">millimeters</option></select></div>
-      </div>
-      <details>
-        <summary>What do M, Q, and H mean?</summary>
-        <p class="small"><strong>M (~15%)</strong> is the recommended default and usually gives the best balance between QR density and damage tolerance. <strong>Q (~25%)</strong> adds more redundancy for scratches, printing defects, or wear, but makes the QR denser. <strong>H (~30%)</strong> provides the highest standard error correction, but usually produces the smallest modules at the same physical size.</p>
-        <p class="small">Higher error correction does not automatically make a QR easier to scan. At a fixed physical size, more redundancy can make each module smaller.</p>
-      </details>
-    </section>
+<div class="section"><h2 class="section-title"><span class="num">1</span> Understand the idea</h2><div class="grid2">
+<div class="card tall"><h3>Purpose / What does this do?</h3><p class="prompt">In your own words, what is this idea trying to accomplish?</p><textarea></textarea></div>
+<div class="card tall"><h3>How does this work?</h3><p class="prompt">Briefly describe how you understand it functioning.</p><textarea></textarea></div>
+</div></div>
 
-    <section class="card qr-wrap">
-      <h2>3. Generated QR</h2>
-      <div id="emptyState" class="small">Enter at least a full name, then generate the QR.</div>
-      <div id="generatedArea" class="hidden">
-        <div class="qr-output-grid">
-          <div id="squarePanel" class="qr-panel"><strong>Square</strong><div id="squareStage" class="qr-stage square"><div id="qrSquare"></div></div><button class="secondary" id="dlPngSquare">Download Square PNG</button></div>
-          <div id="circlePanel" class="qr-panel hidden"><strong>Circle</strong><div id="circleContainer" class="circle-frame"><div id="qrCircle"></div></div><button class="secondary" id="dlPngCircle">Download Circular PNG</button></div>
-        </div>
-        <div>
-          <h3>QR diagnostics</h3>
-          <div class="diagnostics"><div>Payload</div><div id="diagBytes">-</div><div>Error correction</div><div id="diagEc">-</div><div>QR version</div><div id="diagVersion">-</div><div>Matrix</div><div id="diagMatrix">-</div><div>Quiet zone</div><div>4 modules</div><div>Physical size</div><div id="diagPhysical">Not entered</div><div>Approx. module width</div><div id="diagModule">Not calculated</div></div>
-        </div>
-        <div id="scanStatus" class="status info">Enter an intended physical size to estimate module width and physical scanability.</div>
-      </div>
-      <div id="qrError" class="status risk hidden"></div>
-    </section>
+<div class="section"><h2 class="section-title"><span class="num">2</span> Existing landscape + gap</h2><div class="grid2">
+<div class="card tall"><h3>What does this remind you of?</h3><p class="prompt">Products, services, systems, tools, policies, behaviors, research, or other analogues.</p><textarea></textarea></div>
+<div class="card tall"><h3>Gap / Difference</h3><p class="prompt">What does this add, change, combine, improve, or leave unresolved?</p><textarea></textarea></div>
+</div></div>
 
-    <section class="card">
-      <h2>Making a reliable QR</h2>
-      <details open><summary>What this QR does</summary><p class="small">The generated QR stores vCard contact information directly. A compatible phone camera or QR scanner can interpret the contact data without retrieving a hosted contact file.</p></details>
-      <details><summary>Less data usually means a simpler QR</summary><p class="small">Longer names, titles, websites, and descriptions increase the payload. More payload can increase the QR version and matrix size, which makes modules smaller at a fixed physical size.</p></details>
-      <details><summary>Physical size matters</summary><p class="small">Pixel resolution and physical dimensions are different. A high-resolution PNG can still be difficult to scan if it is printed or engraved too small. The module-width guidance on this page is a practical production heuristic, not a QR standard requirement.</p></details>
-      <details><summary>Keep the border clear</summary><p class="small">The square download includes a four-module white quiet zone around the QR. Do not place text, graphics, borders, or engraving inside that clear area. Circular styling is decorative and should be tested more carefully because a circular boundary is not the conventional square quiet-zone geometry.</p></details>
-      <details><summary>Test before producing multiples</summary><p class="small">Test the downloaded QR at its final physical size, on the intended material, under varied lighting, and with multiple phones before printing, engraving, or fabricating a batch.</p></details>
-      <details><summary>Direct QR limitation</summary><p class="small">The contact information is fixed inside the QR. If a phone number, email address, or other encoded detail changes, generate a new QR.</p></details>
-    </section>
+<div class="section"><h2 class="section-title"><span class="num">3</span> Who, where + when?</h2><div class="grid3">
+<div class="card"><h3>Beachhead / Initial users</h3><p class="prompt">Who should probably use, test, buy, support, or encounter this first?</p><textarea></textarea></div>
+<div class="card"><h3>Who is this for / not for?</h3><p class="prompt">Who benefits, pays, decides, is affected, unaffected, or may resist?</p><textarea></textarea></div>
+<div class="card"><h3>Context of use</h3><p class="prompt">Where is this best used? When, how often, and under what conditions?</p><textarea></textarea></div>
+</div></div>
 
-    <footer class="small">Direct contact QR generator. Legacy repository files remain separate from the generated QR and are not required for scanning.</footer>
-  </div>
+<div class="section"><h2 class="section-title"><span class="num">4</span> Initial reaction + personal demand</h2><div class="grid2">
+<div class="card"><h3>What do you like about it now?</h3><textarea></textarea></div>
+<div class="card"><h3>What do you not like about it now?</h3><textarea></textarea></div>
+</div><div class="grid2" style="margin-top:6px">
+<div class="card small"><h3>Would you personally want or use this?</h3><div class="checks"><label><input type="checkbox"> Yes</label><label><input type="checkbox"> Probably</label><label><input type="checkbox"> Unsure</label><label><input type="checkbox"> Probably not</label><label><input type="checkbox"> No</label><label><input type="checkbox"> N/A</label></div><p class="prompt">Why?</p><textarea></textarea></div>
+<div class="card small"><h3>If it worked as imagined, would you recommend it?</h3><div class="checks"><label><input type="checkbox"> Yes</label><label><input type="checkbox"> Probably</label><label><input type="checkbox"> Unsure</label><label><input type="checkbox"> Probably not</label><label><input type="checkbox"> No</label></div><p class="prompt">To whom?</p><textarea></textarea></div>
+</div></div>
+<div class="footer"><span>SIST · Structured Idea Stress Test</span><span>Prioritize explanations, examples, and uncertainties over numerical impressions.</span></div>
+</section>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://unpkg.com/qr-code-styling@1.9.0/lib/qr-code-styling.js"></script>
-  <script>
-    const EC = QRCode.CorrectLevel;
-    const mapEC = { M: EC.M, Q: EC.Q, H: EC.H };
-    const els = {
-      fn:document.getElementById("fn"), org:document.getElementById("org"), title:document.getElementById("title"), tel:document.getElementById("tel"), email:document.getElementById("email"), url:document.getElementById("url"), note:document.getElementById("note"), ecLevel:document.getElementById("ecLevel"), qrSize:document.getElementById("qrSize"), qrStyle:document.getElementById("qrStyle"), physicalSize:document.getElementById("physicalSize"), physicalUnit:document.getElementById("physicalUnit"), payloadLive:document.getElementById("payloadLive"), formError:document.getElementById("formError"), generateBtn:document.getElementById("generateBtn"), qrSquare:document.getElementById("qrSquare"), qrCircle:document.getElementById("qrCircle"), squarePanel:document.getElementById("squarePanel"), circlePanel:document.getElementById("circlePanel"), circleContainer:document.getElementById("circleContainer"), emptyState:document.getElementById("emptyState"), generatedArea:document.getElementById("generatedArea"), qrError:document.getElementById("qrError"), dlPngSquare:document.getElementById("dlPngSquare"), dlPngCircle:document.getElementById("dlPngCircle"), diagBytes:document.getElementById("diagBytes"), diagEc:document.getElementById("diagEc"), diagVersion:document.getElementById("diagVersion"), diagMatrix:document.getElementById("diagMatrix"), diagPhysical:document.getElementById("diagPhysical"), diagModule:document.getElementById("diagModule"), scanStatus:document.getElementById("scanStatus")
-    };
-    let latestVCard="", latestSquareCanvas=null, latestCircleQr=null, latestModuleCount=null, latestQuietPx=null, latestCorePx=null;
+<section class="sheet">
+<div class="header"><div class="header-main"><h1>Structured Idea Stress Test <span class="acronym">SIST</span></h1><div class="subtitle">Find the boundaries, assumptions, failure modes, and useful next moves.</div></div><div class="page-label">Page 2 · Stress Test + Improve</div></div>
 
-    function escVCard(value){ return String(value||"").trim().replace(/\\/g,"\\\\").replace(/\r?\n/g,"\\n").replace(/,/g,"\\,").replace(/;/g,"\\;"); }
-    function splitName(fullName){ const parts=String(fullName||"").trim().split(/\s+/).filter(Boolean); if(parts.length===0)return{first:"",last:""}; if(parts.length===1)return{first:"",last:parts[0]}; return{first:parts.slice(0,-1).join(" "),last:parts[parts.length-1]}; }
-    function collectData(){ return{ fn:els.fn.value.trim(), org:els.org.value.trim(), title:els.title.value.trim(), tel:els.tel.value.trim(), email:els.email.value.trim(), url:els.url.value.trim(), note:els.note.value.trim() }; }
-    function buildVCard(data){ const{first,last}=splitName(data.fn); return["BEGIN:VCARD","VERSION:3.0",`N:${escVCard(last)};${escVCard(first)};;;`,`FN:${escVCard(data.fn)}`,data.org?`ORG:${escVCard(data.org)}`:"",data.title?`TITLE:${escVCard(data.title)}`:"",data.tel?`TEL;TYPE=CELL:${escVCard(data.tel)}`:"",data.email?`EMAIL:${escVCard(data.email)}`:"",data.url?`URL:${escVCard(data.url)}`:"",data.note?`NOTE:${escVCard(data.note)}`:"","END:VCARD"].filter(Boolean).join("\r\n"); }
-    function utf8Bytes(text){ return new TextEncoder().encode(text).length; }
-    function updateLivePayload(){ const data=collectData(); const vcard=data.fn?buildVCard(data):""; els.payloadLive.textContent=`Payload: ${utf8Bytes(vcard)} UTF-8 bytes`; }
-    function setFormError(msg){ els.formError.textContent=msg||""; els.formError.classList.toggle("hidden",!msg); }
-    function setQrError(msg){ els.qrError.textContent=msg||""; els.qrError.classList.toggle("hidden",!msg); }
-    function makeProbeQr(text,level){ const holder=document.createElement("div"); return new QRCode(holder,{text,width:256,height:256,correctLevel:level}); }
-    function versionFromModules(modules){ return Math.round((modules-17)/4); }
-    function dimensions(totalPx,moduleCount){ const pitches=moduleCount+8; let unit=Math.max(1,Math.floor(totalPx/pitches)); return{unit,corePx:moduleCount*unit,quietPx:4*unit,totalPx:(moduleCount+8)*unit}; }
-    function renderSquare(vcard,level,totalPx,moduleCount){ els.qrSquare.innerHTML=""; const d=dimensions(totalPx,moduleCount); latestQuietPx=d.quietPx; latestCorePx=d.corePx; const outer=document.createElement("canvas"); outer.width=d.totalPx; outer.height=d.totalPx; const ctx=outer.getContext("2d"); ctx.fillStyle="#fff"; ctx.fillRect(0,0,outer.width,outer.height); const temp=document.createElement("div"); new QRCode(temp,{text:vcard,width:d.corePx,height:d.corePx,colorDark:"#000000",colorLight:"#ffffff",correctLevel:level}); const src=temp.querySelector("canvas")||temp.querySelector("img"); if(src.tagName==="CANVAS")ctx.drawImage(src,d.quietPx,d.quietPx,d.corePx,d.corePx); else{ const img=new Image(); img.onload=()=>ctx.drawImage(img,d.quietPx,d.quietPx,d.corePx,d.corePx); img.src=src.src; } els.qrSquare.appendChild(outer); latestSquareCanvas=outer; }
-    function renderCircle(vcard,levelKey,totalPx,moduleCount){ els.qrCircle.innerHTML=""; const d=dimensions(totalPx,moduleCount); latestCircleQr=new QRCodeStyling({width:d.corePx,height:d.corePx,type:"canvas",shape:"circle",data:vcard,margin:0,qrOptions:{errorCorrectionLevel:levelKey},dotsOptions:{color:"#000000",type:"square"},cornersSquareOptions:{color:"#000000",type:"square"},cornersDotOptions:{color:"#000000",type:"square"},backgroundOptions:{color:"#ffffff"}}); latestCircleQr.append(els.qrCircle); els.circleContainer.style.padding=`${d.quietPx}px`; }
-    function updateStyleVisibility(){ const circle=els.qrStyle.value==="circle"; els.circlePanel.classList.toggle("hidden",!circle); els.squarePanel.classList.toggle("hidden",circle); }
-    function updateDiagnostics(bytes,levelKey,moduleCount){ const version=versionFromModules(moduleCount),physical=Number(els.physicalSize.value),unit=els.physicalUnit.value,totalPitches=moduleCount+8; els.diagBytes.textContent=`${bytes} UTF-8 bytes`; els.diagEc.textContent=`${levelKey} (${levelKey==="M"?"~15%":levelKey==="Q"?"~25%":"~30%"})`; els.diagVersion.textContent=version; els.diagMatrix.textContent=`${moduleCount} × ${moduleCount} modules`; if(physical>0){ const mm=unit==="in"?physical*25.4:physical,moduleMm=mm/totalPitches; els.diagPhysical.textContent=`${physical.toFixed(2)} ${unit}`; els.diagModule.textContent=`${moduleMm.toFixed(3)} mm`; els.scanStatus.className="status "+(moduleMm>=.5?"good":moduleMm>=.4?"warn":"risk"); els.scanStatus.textContent=moduleMm>=.5?"Good: module size is generous for many physical reproduction methods. Still test the finished material before batch production.":moduleMm>=.4?"Caution: this is relatively dense at the selected physical size. Test carefully on the final material and consider increasing size or reducing payload.":"High density: consider increasing physical size, shortening optional contact information, or using a lower error-correction level before physical production."; } else { els.diagPhysical.textContent="Not entered"; els.diagModule.textContent="Not calculated"; els.scanStatus.className="status info"; els.scanStatus.textContent="Enter an intended physical size to estimate module width and physical scanability."; } }
-    function generate(){ setFormError(""); setQrError(""); const data=collectData(); if(!data.fn){ setFormError("Full name is required to build a valid contact card."); return; } const vcard=buildVCard(data),bytes=utf8Bytes(vcard),levelKey=els.ecLevel.value,level=mapEC[levelKey]||EC.M,totalPx=parseInt(els.qrSize.value,10)||320; try{ const probe=makeProbeQr(vcard,level); const moduleCount=probe._oQRCode.getModuleCount(); renderSquare(vcard,level,totalPx,moduleCount); renderCircle(vcard,levelKey,totalPx,moduleCount); latestVCard=vcard; latestModuleCount=moduleCount; updateDiagnostics(bytes,levelKey,moduleCount); updateStyleVisibility(); els.emptyState.classList.add("hidden"); els.generatedArea.classList.remove("hidden"); } catch(err){ els.generatedArea.classList.add("hidden"); els.emptyState.classList.add("hidden"); setQrError("The contact payload could not be encoded with the selected settings. Reduce optional contact information or choose a lower error-correction level. "+(err&&err.message?err.message:"")); } }
-    function downloadCanvas(canvas,filename){ if(!canvas)return; const a=document.createElement("a"); a.download=filename; a.href=canvas.toDataURL("image/png"); document.body.appendChild(a); a.click(); a.remove(); }
-    async function downloadCircle(){ if(!latestCircleQr||!latestModuleCount)return; const levelKey=els.ecLevel.value,totalPx=parseInt(els.qrSize.value,10)||320,d=dimensions(totalPx,latestModuleCount),blob=await latestCircleQr.getRawData("png"); if(!blob)return; const url=URL.createObjectURL(blob),img=new Image(); img.onload=()=>{ const canvas=document.createElement("canvas"); canvas.width=d.totalPx; canvas.height=d.totalPx; const ctx=canvas.getContext("2d"); ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle="#fff"; ctx.beginPath(); ctx.arc(canvas.width/2,canvas.height/2,canvas.width/2,0,Math.PI*2); ctx.fill(); ctx.drawImage(img,d.quietPx,d.quietPx,d.corePx,d.corePx); downloadCanvas(canvas,"contact-qr-circle.png"); URL.revokeObjectURL(url); }; img.src=url; }
-    [els.fn,els.org,els.title,els.tel,els.email,els.url,els.note].forEach(el=>el.addEventListener("input",updateLivePayload));
-    els.generateBtn.addEventListener("click",generate);
-    els.qrStyle.addEventListener("change",updateStyleVisibility);
-    [els.ecLevel,els.qrSize,els.physicalSize,els.physicalUnit].forEach(el=>el.addEventListener("change",()=>{ if(latestVCard)generate(); }));
-    els.dlPngSquare.addEventListener("click",()=>downloadCanvas(latestSquareCanvas,"contact-qr-square.png"));
-    els.dlPngCircle.addEventListener("click",downloadCircle);
-    updateLivePayload();
-  </script>
+<div class="section"><h2 class="section-title"><span class="num">5</span> Features + friction</h2><div class="grid2">
+<div class="card tall"><h3>Features / Missing</h3><p class="prompt">What seems essential, useful, unnecessary, confusing, or missing?</p><textarea></textarea></div>
+<div class="card tall"><h3>Friction / Adoption barriers</h3><p class="prompt">What could make someone hesitate to try, adopt, buy, approve, recommend, or keep using it?</p><textarea></textarea></div>
+</div></div>
+
+<div class="section"><h2 class="section-title"><span class="num">6</span> Scope, boundaries + limitations</h2><div class="card tall"><h3>Where does this fit, and where does it stop fitting?</h3><p class="prompt">What is it good for or not good for? What boundaries or limitations do you already see or suspect? Consider users, geography, scale, cost, technology, regulation, time, context, expertise, or dependencies.</p><textarea></textarea></div></div>
+
+<div class="section"><h2 class="section-title"><span class="num">7</span> Failure points + assumptions</h2><div class="grid2">
+<div class="card tall"><h3>How could this fail?</h3><p class="prompt">Consider technical, behavioral, financial, operational, social, institutional, legal, or other failure modes.</p><textarea></textarea></div>
+<div class="card tall"><h3>What needs to be true?</h3><p class="prompt">What assumptions, missing pieces, stakeholders, resources, or conditions does the idea depend on?</p><textarea></textarea></div>
+</div></div>
+
+<div class="section"><h2 class="section-title"><span class="num">8</span> Evidence + validation</h2><div class="card"><h3>What seems supported, what needs testing, and what could change your mind?</h3><p class="prompt">Identify convincing claims, claims needing evidence, and tests or evidence that would materially change your view.</p><textarea></textarea></div></div>
+
+<div class="section"><h2 class="section-title"><span class="num">9</span> Market, business + scale</h2><div class="card"><h3>How far could this realistically go?</h3><p class="prompt">Consider need, audience, willingness to pay or support, costs, funding, partners, operations, distribution, regulation, maintenance, replication, and scaling limits.</p><textarea></textarea></div></div>
+
+<div class="section"><h2 class="section-title"><span class="num">10</span> Change it + next step</h2><div class="grid2">
+<div class="card wide"><h3>If you could change one, two, three… things, what would you change?</h3><textarea></textarea></div>
+<div class="card"><h3>What should happen next?</h3><div class="next-grid"><label><input type="checkbox"> Clarify problem</label><label><input type="checkbox"> Interview users</label><label><input type="checkbox"> Test assumption</label><label><input type="checkbox"> Prototype</label><label><input type="checkbox"> Pilot</label><label><input type="checkbox"> Gather evidence</label><label><input type="checkbox"> Compare alternatives</label><label><input type="checkbox"> Test feasibility</label><label><input type="checkbox"> Explore partners</label><label><input type="checkbox"> Business model</label><label><input type="checkbox"> Scale cautiously</label><label><input type="checkbox"> Redesign</label><label><input type="checkbox"> Stop / reconsider</label><label><input type="checkbox"> Other</label></div></div>
+</div></div>
+
+<div class="section"><h2 class="section-title"><span class="num">11</span> Core / Invariant</h2><div class="card"><h3>What should not change?</h3><p class="prompt">What about this idea should be preserved even if everything else changes? What makes it fundamentally this idea?</p><textarea></textarea></div></div>
+
+<div class="section"><h2 class="section-title"><span class="num">12</span> Questions, Suggestions + Notes</h2><div class="grid2">
+<div class="card small"><h3>Questions I still have</h3><textarea></textarea></div>
+<div class="card small"><h3>Suggestions worth considering</h3><textarea></textarea></div>
+</div><div class="notes" style="margin-top:6px"></div></div>
+<div class="footer"><span>SIST · Structured Idea Stress Test</span><span>Reveal what should change, what should stay, and what deserves attention next.</span></div>
+</section>
 </body>
 </html>
