@@ -13,55 +13,49 @@ html,body{margin:0;padding:0;color:var(--ink);font-family:Arial,Helvetica,sans-s
 .toolbar button{border:1px solid #bbb;border-radius:7px;background:white;padding:8px 13px;font-weight:700;cursor:pointer}
 .toolbar button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .sheet{width:8.5in;min-height:11in;margin:20px auto;padding:.35in .42in;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.18)}
-.header{border-bottom:2px solid var(--accent);padding-bottom:8px;margin-bottom:9px;display:flex;align-items:flex-end;gap:12px}
-.header-main{flex:1}
-h1{margin:0;font-size:22px;line-height:1.05}
-.acronym{display:inline-block;margin-left:7px;padding:2px 6px;border:1px solid var(--ink);border-radius:999px;font-size:10px;letter-spacing:.08em;vertical-align:3px}
+.header{border-bottom:2px solid var(--accent);padding-bottom:8px;margin-bottom:9px;display:flex;align-items:flex-end;gap:12px}.header-main{flex:1}
+h1{margin:0;font-size:22px;line-height:1.05}.acronym{display:inline-block;margin-left:7px;padding:2px 6px;border:1px solid var(--ink);border-radius:999px;font-size:10px;letter-spacing:.08em;vertical-align:3px}
 .subtitle{color:var(--muted);font-size:11px;margin:3px 0 0}.page-label{font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}
 .meta{display:grid;grid-template-columns:2fr 1.2fr 1.2fr .75fr;gap:7px;margin-bottom:9px}.field{font-size:8.5px;font-weight:bold;text-transform:uppercase;letter-spacing:.05em;color:#555}.line{display:block;height:20px;border-bottom:1px solid #777}
 .section{margin-top:9px}.section-title{font-size:11px;margin:0 0 5px;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.05em}.num{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--accent);color:white;font-size:9px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.card{border:1px solid var(--line);border-radius:5px;padding:6px;background:white}.card h3{margin:0 0 2px;font-size:9.5px;text-transform:uppercase;letter-spacing:.035em}.prompt{margin:0 0 4px;font-size:8px;line-height:1.25;color:var(--muted)}
 textarea{width:100%;border:0;border-top:1px solid #e2e2e2;resize:vertical;min-height:44px;font:10px Arial;outline:none;background:#fff}.tall textarea{min-height:58px}.small textarea{min-height:32px}.wide textarea{min-height:65px}
-.checks{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:8px}.checks label{white-space:nowrap}.checks input{vertical-align:-1px}
-.next-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px 7px;font-size:8px}.next-grid label{white-space:nowrap}.notes{width:100%;height:1.45in;border:1px solid var(--line);border-radius:5px;background:repeating-linear-gradient(to bottom,#fff 0,#fff 20px,#ddd 21px)}
+.checks{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:8px}.checks label{white-space:nowrap}.checks input{vertical-align:-1px}.next-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px 7px;font-size:8px}.next-grid label{white-space:nowrap}
+.notes{width:100%;height:1.45in;border:1px solid var(--line);border-radius:5px;background:repeating-linear-gradient(to bottom,#fff 0,#fff 20px,#ddd 21px)}
 .footer{margin-top:8px;padding-top:5px;border-top:1px solid var(--line);font-size:7.5px;color:var(--muted);display:flex;justify-content:space-between;gap:10px}
 @media(max-width:900px){body{background:white}.toolbar{position:static}.sheet{width:100%;min-height:auto;margin:0;padding:18px;box-shadow:none}.meta,.grid2,.grid3{grid-template-columns:1fr}.page-label{display:none}.next-grid{grid-template-columns:1fr 1fr}}
 @page{size:letter portrait;margin:.32in}
 @media print{
- html,body{background:#fff;width:auto;height:auto}
- .toolbar{display:none!important}
+ html,body{background:#fff;width:auto;height:auto}.toolbar{display:none!important}
  .sheet{width:auto!important;min-height:0!important;height:auto!important;margin:0!important;padding:0!important;box-shadow:none!important;overflow:visible;break-inside:avoid;page-break-inside:avoid}
- .sheet:first-of-type{break-after:page;page-break-after:always}
- .sheet:last-child{break-after:auto;page-break-after:auto}
- .header{padding-bottom:5px;margin-bottom:5px;gap:8px}
- h1{font-size:18px}.acronym{font-size:8px;padding:1px 5px}.subtitle{font-size:9px}.page-label{display:block;font-size:7px}
- .meta{grid-template-columns:2fr 1.2fr 1.2fr .75fr;gap:5px;margin-bottom:5px}.field{font-size:7px}.line{height:14px}
- .section{margin-top:5px}.section-title{font-size:9px;margin-bottom:3px;gap:4px}.num{width:14px;height:14px;font-size:7px}
+ .sheet:first-of-type{break-after:page;page-break-after:always}.sheet:last-child{break-after:auto;page-break-after:auto}
+ .header{padding-bottom:4px;margin-bottom:4px;gap:8px}h1{font-size:17px}.acronym{font-size:8px;padding:1px 5px}.subtitle{font-size:8.5px}.page-label{display:block;font-size:7px}
+ .meta{grid-template-columns:2fr 1.2fr 1.2fr .75fr;gap:5px;margin-bottom:4px}.field{font-size:7px}.line{height:12px}
+ .section{margin-top:4px}.section-title{font-size:8.8px;margin-bottom:2px;gap:4px}.num{width:14px;height:14px;font-size:7px}
  .grid2{grid-template-columns:1fr 1fr;gap:4px}.grid3{grid-template-columns:repeat(3,1fr);gap:4px}
- .card{padding:4px;border-radius:4px}.card h3{font-size:8px;margin-bottom:1px}.prompt{font-size:6.8px;line-height:1.15;margin-bottom:2px}
- textarea{min-height:31px;font-size:8px}.tall textarea{min-height:39px}.small textarea{min-height:24px}.wide textarea{min-height:43px}
- .checks{gap:2px 6px;font-size:6.8px}.checks input{width:11px;height:11px;margin:1px 2px 1px 0}
- .next-grid{grid-template-columns:repeat(4,1fr);gap:2px 4px;font-size:6.7px}.next-grid input{width:11px;height:11px;margin:1px 2px 1px 0}
- .notes{height:1.18in;background:repeating-linear-gradient(to bottom,#fff 0,#fff 15px,#ddd 16px)}
- .footer{margin-top:4px;padding-top:3px;font-size:6.3px}
+ .card{padding:3.5px;border-radius:4px}.card h3{font-size:7.8px;margin-bottom:1px}.prompt{font-size:6.6px;line-height:1.12;margin-bottom:2px}
+ textarea{min-height:28px;font-size:8px}.tall textarea{min-height:35px}.small textarea{min-height:22px}.wide textarea{min-height:42px}
+ .checks{gap:1px 5px;font-size:6.5px}.checks input{width:10px;height:10px;margin:1px 2px 1px 0}.next-grid{grid-template-columns:repeat(4,1fr);gap:2px 4px;font-size:6.6px}.next-grid input{width:10px;height:10px;margin:1px 2px 1px 0}
+ .notes{height:1.42in;background:repeating-linear-gradient(to bottom,#fff 0,#fff 15px,#ddd 16px)}.footer{margin-top:3px;padding-top:2px;font-size:6.2px}
+ .page1 .tall textarea{min-height:32px}.page1 textarea{min-height:25px}.page1 .small textarea{min-height:20px}
 }
 </style>
 </head>
 <body>
 <div class="toolbar"><button class="primary" onclick="window.print()">Print / Save PDF</button><button onclick="document.querySelectorAll('textarea').forEach(x=>x.value='')">Clear text</button></div>
-<section class="sheet">
-<div class="header"><div class="header-main"><h1>Structured Idea Stress Test <span class="acronym">SIST</span></h1><div class="subtitle">Understand it. React to it. Then try to break it.</div></div><div class="page-label">Page 1 · Understand + React</div></div>
+<section class="sheet page1">
+<div class="header"><div class="header-main"><h1>Structured Idea Stress Test <span class="acronym">SIST</span></h1><div class="subtitle">Understand the idea, place it in context, identify who it serves, and define where it fits.</div></div><div class="page-label">Page 1 · Understand + Bound</div></div>
 <div class="meta"><div class="field">Idea / Concept<span class="line"></span></div><div class="field">Presenter / Creator<span class="line"></span></div><div class="field">Evaluator (optional)<span class="line"></span></div><div class="field">Date<span class="line"></span></div></div>
 <div class="section"><h2 class="section-title"><span class="num">1</span> Understand the idea</h2><div class="grid2"><div class="card tall"><h3>Purpose / What does this do?</h3><p class="prompt">In your own words, what is this idea trying to accomplish?</p><textarea></textarea></div><div class="card tall"><h3>How does this work?</h3><p class="prompt">Briefly describe how you understand it functioning.</p><textarea></textarea></div></div></div>
 <div class="section"><h2 class="section-title"><span class="num">2</span> Existing landscape + gap</h2><div class="grid2"><div class="card tall"><h3>What does this remind you of?</h3><p class="prompt">Products, services, systems, tools, policies, behaviors, research, or other analogues.</p><textarea></textarea></div><div class="card tall"><h3>Gap / Difference</h3><p class="prompt">What does this add, change, combine, improve, or leave unresolved?</p><textarea></textarea></div></div></div>
 <div class="section"><h2 class="section-title"><span class="num">3</span> Who, where + when?</h2><div class="grid3"><div class="card"><h3>Beachhead / Initial users</h3><p class="prompt">Who should probably use, test, buy, support, or encounter this first?</p><textarea></textarea></div><div class="card"><h3>Who is this for / not for?</h3><p class="prompt">Who benefits, pays, decides, is affected, unaffected, or may resist?</p><textarea></textarea></div><div class="card"><h3>Context of use</h3><p class="prompt">Where is this best used? When, how often, and under what conditions?</p><textarea></textarea></div></div></div>
-<div class="section"><h2 class="section-title"><span class="num">4</span> Initial reaction + personal demand</h2><div class="grid2"><div class="card"><h3>What do you like about it now?</h3><textarea></textarea></div><div class="card"><h3>What do you not like about it now?</h3><textarea></textarea></div></div><div class="grid2" style="margin-top:6px"><div class="card small"><h3>Would you personally want or use this?</h3><div class="checks"><label><input type="checkbox"> Yes</label><label><input type="checkbox"> Probably</label><label><input type="checkbox"> Unsure</label><label><input type="checkbox"> Probably not</label><label><input type="checkbox"> No</label><label><input type="checkbox"> N/A</label></div><p class="prompt">Why?</p><textarea></textarea></div><div class="card small"><h3>If it worked as imagined, would you recommend it?</h3><div class="checks"><label><input type="checkbox"> Yes</label><label><input type="checkbox"> Probably</label><label><input type="checkbox"> Unsure</label><label><input type="checkbox"> Probably not</label><label><input type="checkbox"> No</label></div><p class="prompt">To whom?</p><textarea></textarea></div></div></div>
-<div class="footer"><span>SIST · Structured Idea Stress Test</span><span>Prioritize explanations, examples, and uncertainties over numerical impressions.</span></div>
-</section>
-<section class="sheet">
-<div class="header"><div class="header-main"><h1>Structured Idea Stress Test <span class="acronym">SIST</span></h1><div class="subtitle">Find the boundaries, assumptions, failure modes, and useful next moves.</div></div><div class="page-label">Page 2 · Stress Test + Improve</div></div>
+<div class="section"><h2 class="section-title"><span class="num">4</span> Initial reaction + personal demand</h2><div class="grid2"><div class="card"><h3>What do you like about it now?</h3><textarea></textarea></div><div class="card"><h3>What do you not like about it now?</h3><textarea></textarea></div></div><div class="grid2" style="margin-top:4px"><div class="card small"><h3>Would you personally want or use this?</h3><div class="checks"><label><input type="checkbox"> Yes</label><label><input type="checkbox"> Probably</label><label><input type="checkbox"> Unsure</label><label><input type="checkbox"> Probably not</label><label><input type="checkbox"> No</label><label><input type="checkbox"> N/A</label></div><p class="prompt">Why?</p><textarea></textarea></div><div class="card small"><h3>If it worked as imagined, would you recommend it?</h3><div class="checks"><label><input type="checkbox"> Yes</label><label><input type="checkbox"> Probably</label><label><input type="checkbox"> Unsure</label><label><input type="checkbox"> Probably not</label><label><input type="checkbox"> No</label></div><p class="prompt">To whom?</p><textarea></textarea></div></div></div>
 <div class="section"><h2 class="section-title"><span class="num">5</span> Features + friction</h2><div class="grid2"><div class="card tall"><h3>Features / Missing</h3><p class="prompt">What seems essential, useful, unnecessary, confusing, or missing?</p><textarea></textarea></div><div class="card tall"><h3>Friction / Adoption barriers</h3><p class="prompt">What could make someone hesitate to try, adopt, buy, approve, recommend, or keep using it?</p><textarea></textarea></div></div></div>
 <div class="section"><h2 class="section-title"><span class="num">6</span> Scope, boundaries + limitations</h2><div class="card tall"><h3>Where does this fit, and where does it stop fitting?</h3><p class="prompt">What is it good for or not good for? What boundaries or limitations do you already see or suspect? Consider users, geography, scale, cost, technology, regulation, time, context, expertise, or dependencies.</p><textarea></textarea></div></div>
+<div class="footer"><span>SIST · Structured Idea Stress Test</span><span>Understand the idea well enough to identify its fit, friction, and boundaries.</span></div>
+</section>
+<section class="sheet page2">
+<div class="header"><div class="header-main"><h1>Structured Idea Stress Test <span class="acronym">SIST</span></h1><div class="subtitle">Test what could fail, what must be true, what needs evidence, what should change, and what should remain.</div></div><div class="page-label">Page 2 · Stress Test + Improve</div></div>
 <div class="section"><h2 class="section-title"><span class="num">7</span> Failure points + assumptions</h2><div class="grid2"><div class="card tall"><h3>How could this fail?</h3><p class="prompt">Consider technical, behavioral, financial, operational, social, institutional, legal, or other failure modes.</p><textarea></textarea></div><div class="card tall"><h3>What needs to be true?</h3><p class="prompt">What assumptions, missing pieces, stakeholders, resources, or conditions does the idea depend on?</p><textarea></textarea></div></div></div>
 <div class="section"><h2 class="section-title"><span class="num">8</span> Evidence + validation</h2><div class="card"><h3>What seems supported, what needs testing, and what could change your mind?</h3><p class="prompt">Identify convincing claims, claims needing evidence, and tests or evidence that would materially change your view.</p><textarea></textarea></div></div>
 <div class="section"><h2 class="section-title"><span class="num">9</span> Market, business + scale</h2><div class="card"><h3>How far could this realistically go?</h3><p class="prompt">Consider need, audience, willingness to pay or support, costs, funding, partners, operations, distribution, regulation, maintenance, replication, and scaling limits.</p><textarea></textarea></div></div>
