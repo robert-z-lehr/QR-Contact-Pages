@@ -10,8 +10,7 @@ It is designed for products, services, research concepts, policies, intervention
 
 ## Live page
 
-Current GitHub Pages site:
-https://robert-z-lehr.github.io/QR-Contact-Pages/
+[SIST](https://robert-z-lehr.github.io/SIST/)
 
 ## Current structure
 
